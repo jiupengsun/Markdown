@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1>Hello World </h1>
+<form id="chatForm">
+    <input type="text" maxlength="50" id="name">
+    <input type="text" maxlength="100" id="message">
+    <input type="submit" value="send">
+</form>
+
+</body>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript">
+
+    $(function(){
+        var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+        var chat_socket = new ReconnectionWebSocket(ws_scheme + "://" + window.location.host + "/chat" + window.location.pathname);
+
+        chat_socket.onmessage = function(message) {
+            alert(message);
+        };
+
+        $("#chatForm").on("submit", function(event) {
+            event.preventDefault();
+            var message = {
+                handle: $("#name").val(),
+                message: $("#message").val()
+            };
+
+            chat_socket.send(JSON.stringify(message));
+            return false;
+        })
+    });
+</script>
+</html>
